@@ -1,0 +1,50 @@
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+
+actor "Lecteur" as Lecteur
+
+rectangle Bibliothèque {
+    usecase (Demander un prêt inter-bibliothèque) as DemanderPretInterBibliotheque
+    usecase (Mettre le lecteur sur liste d'attent) as MettreLecteurListeAttente
+    usecase (Vérifier la disponibilité d'un livre) as VerifierDisponibiliteLivre
+    usecase (Emprunter un livre) as EmprunterLivre
+    usecase (Enregistre le prêt) as EnregistrerPret
+    usecase (Authentification) as Authentification
+    usecase (Authentification par carte) as AuthentificationParCarte
+    usecase (Authentification par mot de passe) as AuthentificationParMotDePasse
+    usecase (Aide à la recherche bibliographique) as AideRechercheBibliographique
+}
+
+
+actor "Serveur d'authentification" as ServeurAuthentification
+actor "Base de données de prêt" as BaseDeDonnees
+actor "Bibliothécaire" as Bibliothecaire
+actor "Bibliothécaire spécialiste de discipline" as Specialiste
+
+Lecteur -- EmprunterLivre
+Lecteur -- AideRechercheBibliographique
+Lecteur -- AuthentificationParCarte
+
+EmprunterLivre -- Bibliothecaire
+VerifierDisponibiliteLivre -- BaseDeDonnees
+EnregistrerPret -- BaseDeDonnees
+Authentification -- Bibliothecaire
+Authentification -- ServeurAuthentification
+AideRechercheBibliographique -- Specialiste
+
+AuthentificationParCarte --^ Authentification
+AuthentificationParMotDePasse --^ Authentification
+
+EmprunterLivre ..> EnregistrerPret : <<include>>
+EmprunterLivre ..> VerifierDisponibiliteLivre : <<include>>
+EmprunterLivre ..> AuthentificationParCarte : <<include>>
+
+VerifierDisponibiliteLivre <.. DemanderPretInterBibliotheque  : <<extend>>
+VerifierDisponibiliteLivre <.. MettreLecteurListeAttente  : <<extend>>
+
+Bibliothecaire ^-- Specialiste
+
+
+@enduml
